@@ -1,0 +1,28 @@
+name: Image pin tests
+
+# Fast checks on the image tags in the charts' values files. They need no helm or
+# cluster, so they run on every PR, including the draft PRs Heatshield opens.
+on:
+  pull_request:
+  push:
+    branches:
+      - release-2.1.2
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  image-pins:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # the downgrade test reads the PR's base branch
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install test dependencies
+        run: pip install pytest pyyaml
+      - name: Run image pin tests
+        run: pytest tests/image_pins -v -p no:cacheprovider

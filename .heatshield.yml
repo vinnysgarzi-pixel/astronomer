@@ -1,0 +1,5 @@
+version: 1
+validation:
+  workflows:
+    - file: image_pins.yml
+  timeout_seconds: 1800
